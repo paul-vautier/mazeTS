@@ -18,6 +18,8 @@ export class View {
         let div = document.createElement("div");
         div.style.animationDelay = (10 * (x + y)).toString() + "ms";
         div.classList.add(state)
+        let child = document.createElement("div");
+        div.appendChild(child);
         this.mazeParent.appendChild(div);
         div.addEventListener("transitionend", () => this.flipTransitionHandler(x, y));
         return div

@@ -1,8 +1,9 @@
+import { State } from "../cell-state.js";
 import {MazeSolver} from "./maze-solver.js"
 
-export class NonSolver extends MazeSolver {
+export class RandomSolver extends MazeSolver {
     solve(): [number, number][] {
-        throw new Error("Method not implemented.");
+        return []
     }
 
 }

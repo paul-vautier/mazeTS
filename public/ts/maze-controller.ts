@@ -13,10 +13,10 @@ export class MazeController {
     dragging : boolean;
     solver : MazeSolver;
     generator : MazeGenerator;
+    selectedState : State;
     constructor(size: number, solver : MazeSolver, generator : MazeGenerator) {
         this.size = size;
         this.dragging = false
-        this.solver = solver;
         this.generator = generator;
         document.addEventListener("mousedown", () => this.dragging = true)
         document.addEventListener("mouseup", () => this.dragging = false)
@@ -33,8 +33,15 @@ export class MazeController {
 
         this.view = new View(this.mazeElement, this.model);
 
-        this.view.addEventListenerToEachCell("mouseover", (x, y) => this.toggleStateOnClickHandler(x,y))
-        this.view.addEventListenerToEachCell("mousedown", (x, y) => this.toggleStateOnClickHandler(x, y, true))
+        this.view.addEventListenerToEachCell("mouseover", (x, y) => this.toggleStateOnClickHandler(x,y));
+        this.view.addEventListenerToEachCell("mousedown", (x, y) => this.toggleStateOnClickHandler(x, y, true));
+        
+        this.solver = solver;
+        solver.setOnCellUpdate(this.changeState.bind(this));
+
+        solver.solve()
+
+        this.selectedState = State.END;
     }
 
     toggleStateOnClickHandler(x: number, y: number, force? : boolean) {
@@ -43,12 +50,11 @@ export class MazeController {
         }
         if (y >= 0 && y < this.size && x < this.size && x >= 0) {
             let state = this.model[x][y];
-            if (state == State.WALL) {
+            if (state == this.selectedState) {
                 this.changeState(x, y, State.UNVISITED_CELL);
-            } else if (state == State.UNVISITED_CELL) {
-                this.changeState(x, y, State.WALL);
+            } else if (state != this.selectedState) {
+                this.changeState(x, y, this.selectedState);
             }
-            this.view.grid[x][y].classList.add("flip");
         }
     }
 
@@ -60,10 +66,16 @@ export class MazeController {
     }
 
     changeState(x: number, y: number, state: State) {
-        if (y >= 0 && y < this.size && x < this.size && x >= 0) {
+        if (y >= 0 && y < this.size && x < this.size && x >= 0 && state != this.model[x][y]) {
             this.view.grid[x][y].classList.remove(this.model[x][y]);
             this.view.grid[x][y].classList.add(state);
             this.model[x][y] = state;
+            this.view.grid[x][y].classList.add("flip");
         }
+    }
+
+    setSolver(solver : MazeSolver) {
+        this.solver = solver;
+        solver.setOnCellUpdate(this.changeState.bind(this));
     }
 }

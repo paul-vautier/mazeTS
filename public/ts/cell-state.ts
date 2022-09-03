@@ -3,4 +3,6 @@ export enum State {
     UNVISITED_CELL = "maze-unvisited",
     WALL = "maze-wall",
     PATH = "maze-path",
+    BEGIN = "maze-begin",
+    END = "maze-end",
 }

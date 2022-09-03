@@ -43,6 +43,35 @@ div.maze-wall {
     background-color: rgb(157, 105, 90);
 }
 
+div.maze-begin, div.maze-end {
+    background-color: rgb(39,154,241);
+}
+div.maze-begin > div, div.maze-end > div {
+    pointer-events: none;
+    content: "";
+    background-origin: content-box;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 5px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    animation: show 1s;
+}
+
+div.maze-begin > div {
+    background-image: url("../img/flag.png");
+}
+
+div.maze-end > div {
+    background-image: url("../img/crown.png");
+}
+
+div.maze-path {
+    background-color: rgb(57,67,183);
+}
+
 .flip {
     transform: rotateY(90deg);
 }
