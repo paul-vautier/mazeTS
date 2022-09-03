@@ -1,8 +1,24 @@
+:root {
+    --bg-no-rgb: 38, 39, 48;
+    --bg: rgb(var(--bg-no-rgb));
+    --accent: rgb(215, 208, 200);
+    --visited: rgb(88, 129, 87);
+    --wall: rgb(157, 105, 90);
+    --goal: rgb(39,154,241);
+}
+
 html,
 body {
     height: 100%;
     margin: 0px;
-    background-color: rgb(38, 39, 48);
+    background-color: var(--bg);
+    font-family: Ubuntu, "times new roman", times, roman, serif;
+    font-weight: bold;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
 }
 
 header {
@@ -10,9 +26,11 @@ header {
 }
 
 main {
-    height: 100%;
     text-align: center;
-    padding: 50px;
+    flex-grow: 1;
+    display: flex;
+    height: max-content;
+    flex-direction: row;
 }
 
 #maze {
@@ -20,6 +38,7 @@ main {
     width: 800px;
     display: inline-grid;
     gap: 4px;
+    padding: 50px;
 }
 
 #maze>div {
@@ -31,20 +50,56 @@ main {
     animation: grow .5s, show .5s forwards;
 }
 
+#commands {
+    background-color: var(--accent);
+    color: var(--bg);
+    width: 25%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.expand {
+    height: 40px;
+    width: 40px;
+    background-image: url("../img/expand.png");
+    content: "";
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin:15px;
+}
+#commands > li {
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    border-right: 3px solid rgba(var(--bg-no-rgb), 0.3);
+}
+
+#commands > li > ul {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.tile-text {
+    margin-left: 10px;
+    text-align: left;
+}
 div.maze-unvisited {
-    background-color: rgb(215, 208, 200);
+    background-color: var(--accent);
 }
 
 div.maze-visited {
-    background-color: rgb(88, 129, 87);
+    background-color: var(--visited);
 }
 
 div.maze-wall {
-    background-color: rgb(157, 105, 90);
+    background-color: var(--wall);
 }
 
 div.maze-begin, div.maze-end {
-    background-color: rgb(39,154,241);
+    background-color: var(--goal);
 }
 div.maze-begin > div, div.maze-end > div {
     pointer-events: none;
@@ -75,7 +130,14 @@ div.maze-path {
 .flip {
     transform: rotateY(90deg);
 }
-
+.tile {
+    margin-left: 5px;
+    min-height: 40px;
+    min-width: 40px;
+    padding:5px;
+    border-radius: 5px;
+    border: 2px solid var(--bg);
+}
 @keyframes grow {
     from {
         transform: scale(0);

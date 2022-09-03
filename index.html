@@ -7,6 +7,7 @@
     <title>Document</title>
     <script src="public/js/init.js" type="module"></script>
     <link rel="stylesheet" type="text/css" href="public/css/style.css">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin">
 </head>
 <body>
     <header class="header">
@@ -20,7 +21,14 @@
     </header>
     <main>
         <div id="commands">
-
+            <li>
+                <ul id="begin"><div class="tile maze-begin"><img src="public/img/flag.png" width="40" height="40"/></div><div class="tile-text">The beginning of the maze</div></ul>
+                <ul id="end"><div class="tile maze-end"><img src="public/img/crown.png" width="40" height="40"/></div><div class="tile-text">The end of the maze</div></ul>
+                <ul id="wall"><div class="tile maze-wall"></div><div class="tile-text">A wall, which the solver will avoid</div></ul>
+                <ul id="unvisited"><div class="tile maze-unvisited"></div><div class="tile-text">A cell which has not been visited by the solver</div></ul>
+                <ul id="visited"><div class="tile maze-visited"></div><div class="tile-text">A cell which has been visited by the solver</div></ul>
+            </li>
+            <div class="expand"></div>
         </div>
 
         <div id="maze"></div>
