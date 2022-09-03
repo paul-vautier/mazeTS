@@ -1,0 +1,25 @@
+{
+  "name": "maze",
+  "version": "1.0.0",
+  "description": "A simple maze generator and solver",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PeP-dev/mazeTS.git"
+  },
+  "keywords": [
+    "Maze"
+  ],
+  "author": "PeP",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PeP-dev/mazeTS/issues"
+  },
+  "homepage": "https://github.com/PeP-dev/mazeTS#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
