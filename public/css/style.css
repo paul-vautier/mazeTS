@@ -31,6 +31,10 @@ main {
     display: flex;
     height: max-content;
     flex-direction: row;
+    justify-content: space-between;
+}
+main > * {
+  flex:1;
 }
 
 #maze {
@@ -39,6 +43,7 @@ main {
     display: inline-grid;
     gap: 4px;
     padding: 50px;
+    aspect-ratio: 1;
 }
 
 #maze>div {
@@ -50,40 +55,71 @@ main {
     animation: grow .5s, show .5s forwards;
 }
 
-#commands {
+.panel {
     background-color: var(--accent);
     color: var(--bg);
     width: 25%;
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
 }
+
+.panel.shrunk {
+    background-color: var(--bg);
+
+}
+
+.panel.shrunk > *:not(.expand) {
+    display: none;
+}
+
+.panel.shrunk > .expand::after {
+    transform: rotateZ(180deg);
+}
+
 .expand {
-    height: 40px;
-    width: 40px;
-    background-image: url("../img/expand.png");
-    content: "";
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    margin:15px;
+    height: 100%;
+    width: 25px;
+    background-color: var(--accent);
+    padding: 0px 10px 0px 10px;
+    border-left: 3px solid rgba(var(--bg-no-rgb), 0.3);
+    display: flex;
+    align-items: center;
 }
-#commands > li {
+
+.expand::after {
+    background-image: url("../img/expand.png");
+    display: inline-block;
+    content: "";
+    width: 25px;
+    height: 25px;
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background-position: center;
+}
+
+.rotated {
+    rotate: 180deg;
+}
+
+.panel > li {
     height: 100%;
     display: flex;
     justify-content: space-around;
     flex-direction: column;
-    border-right: 3px solid rgba(var(--bg-no-rgb), 0.3);
+    padding-right:10px;
 }
 
-#commands > li > ul {
+.panel > li > ul {
     display: flex;
     flex-direction: row;
     align-items: center;
 }
 
 .tile-text {
-    margin-left: 10px;
+    margin: 0px 10px 0px 10px;
     text-align: left;
 }
 div.maze-unvisited {
@@ -130,14 +166,20 @@ div.maze-path {
 .flip {
     transform: rotateY(90deg);
 }
+
 .tile {
     margin-left: 5px;
     min-height: 40px;
     min-width: 40px;
     padding:5px;
     border-radius: 5px;
-    border: 2px solid var(--bg);
+    border: 2px solid rgb(255, 165, 105);
 }
+.tile[data-tile] {
+    border-color: var(--bg);
+    cursor:pointer;
+}
+
 @keyframes grow {
     from {
         transform: scale(0);
@@ -156,4 +198,12 @@ div.maze-path {
     to {
         opacity: 1;
     }
+}
+
+.right.shrunk > *{
+    margin-left: auto;
+}
+
+.right ul {
+    padding-left: 0;
 }

@@ -3,8 +3,16 @@ import { State } from "./cell-state.js";
 export class View {
     grid: HTMLElement[][];
     mazeParent : HTMLElement;
-    constructor(mazeParent : HTMLElement, model : State[][]) {
+    constructor(model : State[][]) {
+        let mazeParent = document.getElementById("maze");
+        if (!mazeParent) {
+            throw Error("Couldn't find the #maze element");
+        }
         this.mazeParent = mazeParent;
+        this.mazeParent.dataset.size = model.length.toString();
+        this.mazeParent.style.gridTemplateRows = `repeat(${model.length}, 1fr)`
+        this.mazeParent.style.gridTemplateColumns = `repeat(${model.length}, 1fr)`
+
         this.grid = model.map((array, x) => array.map((state, y) => this.createDiv(state, x, y)));
     }
 
@@ -27,5 +35,9 @@ export class View {
 
     addEventListenerToEachCell(event : string, callback : (x : number, y : number)=>void) {
         this.grid.forEach((array, i) => array.forEach((cell, j)=> cell.addEventListener(event, ()=>callback(i,j))));
+    }
+
+    destroy() {
+        this.mazeParent.innerHTML = '';
     }
 }

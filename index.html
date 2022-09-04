@@ -20,21 +20,23 @@
         </nav>
     </header>
     <main>
-        <div id="commands">
+        <div id="tiles" class="panel">
             <li>
-                <ul id="begin"><div class="tile maze-begin"><img src="public/img/flag.png" width="40" height="40"/></div><div class="tile-text">The beginning of the maze</div></ul>
-                <ul id="end"><div class="tile maze-end"><img src="public/img/crown.png" width="40" height="40"/></div><div class="tile-text">The end of the maze</div></ul>
-                <ul id="wall"><div class="tile maze-wall"></div><div class="tile-text">A wall, which the solver will avoid</div></ul>
-                <ul id="unvisited"><div class="tile maze-unvisited"></div><div class="tile-text">A cell which has not been visited by the solver</div></ul>
-                <ul id="visited"><div class="tile maze-visited"></div><div class="tile-text">A cell which has been visited by the solver</div></ul>
+                <ul id="begin"><div data-tile="begin" class="tile maze-begin"><img src="public/img/flag.png" width="40" height="40"/></div><div class="tile-text">The beginning of the maze</div></ul>
+                <ul id="end"><div data-tile="end" class="tile maze-end"><img src="public/img/crown.png" width="40" height="40"/></div><div class="tile-text">The end of the maze</div></ul>
+                <ul id="wall"><div data-tile="wall" class="tile maze-wall"></div><div class="tile-text">A wall, which the solver will avoid</div></ul>
+                <ul id="unvisited"><div data-tile="unvisited" class="tile maze-unvisited"></div><div class="tile-text">An empty cell</div></ul>
             </li>
-            <div class="expand"></div>
+            <div class="expand" data-expand="tiles"></div>
         </div>
 
         <div id="maze"></div>
 
-        <div id="panel">
-
+        <div id="panel" class="panel right">
+            <div class="expand rotated" data-expand="panel"></div>
+            <li>
+                <ul id="unvisited"><div class="tile-text">A simple DFS maze generator</div><div class="tile maze-wall"></div></ul>
+            </li>
         </div>
     </main>
 </body>
