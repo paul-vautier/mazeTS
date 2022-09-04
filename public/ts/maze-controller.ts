@@ -1,42 +1,33 @@
-import { View } from "./view.js";
-import { State } from "./model/cell-state.js";
-import { MazeSolver } from "./solvers/maze-solver.js";
 import { MazeGenerator } from "./generators/algorithms/maze-generator.js";
-import { Model } from "./model/model.js";
-import { WallGenerator } from "./generators/batch/wall-generator.js";
-import { EmptyGenerator } from "./generators/batch/empty-generator.js";
-import { RecursiveDFSGenerator } from "./generators/algorithms/recurse-dfs-generator.js";
-import { Indices } from "./model/indices.js";
 import { RandomizedKruskal } from "./generators/algorithms/randomized-kruskal.js";
+import { RecursiveDFSGenerator } from "./generators/algorithms/recurse-dfs-generator.js";
+import { State } from "./model/cell-state.js";
+import { Model } from "./model/model.js";
+import { BFSSolver } from "./solvers/bfs-solver.js";
+import { MazeSolver } from "./solvers/maze-solver.js";
+import { View } from "./view.js";
 
 export class MazeController {
     view: View;
     model: Model;
     size: number;
-    begin: Indices | undefined;
-    end: Indices | undefined;
     dragging: boolean;
     solver: MazeSolver;
     generator: MazeGenerator;
     selectedState: State;
-    constructor(size: number, solver: MazeSolver, generator: MazeGenerator) {
+    constructor(size: number, model: Model, view: View, solver: MazeSolver, generator: MazeGenerator) {
         this.size = 2*size+1;
         this.dragging = false
         this.generator = generator;
         document.addEventListener("mousedown", () => this.dragging = true)
         document.addEventListener("mouseup", () => this.dragging = false)
-
-        this.model = new Model(generator);
-        this.model.regenerate(new EmptyGenerator().create(this.size));
-        this.view = new View(this.model);
-
+        this.view = view;
+        this.model = model;
         this.view.addEventListenerToEachCell("mouseover", (x, y) => this.toggleStateOnClickHandler(x, y));
         this.view.addEventListenerToEachCell("mousedown", (x, y) => this.toggleStateOnClickHandler(x, y, true));
         
         this.solver = solver;
-        solver.setOnCellUpdate(this.changeState.bind(this));
 
-        solver.solve()
         this.addTileChangeEvent();
         this.addToggleCommandPanel();
         this.addGeneratorChangeEvent("dfs", () => {
@@ -46,6 +37,11 @@ export class MazeController {
         this.addGeneratorChangeEvent("kruskal", () => {
             return new RandomizedKruskal(this.size)
         })
+
+        this.addSolverChangeEvent("bfs", () => {
+            return new BFSSolver(this.model);
+        }); 
+
         this.selectedState = State.UNVISITED_CELL;
     }
 
@@ -58,10 +54,12 @@ export class MazeController {
             return
         }
         if (y >= 0 && y < this.size && x < this.size && x >= 0) {
+
+            if (this.model.model[x][y] == State.END || this.model.model[x][y] == State.BEGIN) {
+                return;
+            }
             let state = this.model.model[x][y];
-            if (state == this.selectedState) {
-                this.changeState(x, y, State.UNVISITED_CELL);
-            } else if (state != this.selectedState) {
+            if (state != this.selectedState) {
                 this.changeState(x, y, this.selectedState);
             }
         }
@@ -78,14 +76,13 @@ export class MazeController {
         if (y >= 0 && y < this.size && x < this.size && x >= 0 && state != this.model.model[x][y]) {
             this.view.grid[x][y].classList.remove(this.model.model[x][y]);
             this.view.grid[x][y].classList.add(state);
-            this.model.model[x][y] = state;
+            this.model.updateModel(x, y, state);
             this.view.grid[x][y].classList.add("flip");
         }
     }
 
-    setSolver(solver: MazeSolver) {
-        this.solver = solver;
-        solver.setOnCellUpdate(this.changeState.bind(this));
+    setSolver(solverProvider: (model: Model)=>MazeSolver) {
+        this.solver = solverProvider(this.model);
     }
 
     addTileChangeEvent() {
@@ -102,8 +99,19 @@ export class MazeController {
 
     addGeneratorChangeEvent(id: string, generatorProvider: ()=> MazeGenerator) {
         document.getElementById(id)?.addEventListener('click', ()=> {
-            console.log('dsdsd')
             generatorProvider().create(this.size, this.model);
+        })
+    }
+
+    addSolverChangeEvent(id: string, solverProvider: ()=> MazeSolver) {
+        document.getElementById(id)?.addEventListener('click', () => {
+            if (this.model.begin) {
+                let arr = solverProvider().solve(this.model.begin.x, this.model.begin.y);
+                console.log(...arr)
+                arr.forEach((indice)=> {
+                    this.model.updateModel(indice.x, indice.y, State.PATH);
+                });
+            }
         })
     }
 

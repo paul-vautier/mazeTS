@@ -1,6 +1,6 @@
 import { State } from "../../model/cell-state.js";
 import { Model } from "../../model/model.js";
-import { getRandomInt } from '../../util.js';
+import { get2dArray, getRandomInt } from '../../util.js';
 import { StrictBlockwiseGenerator } from "./strict-blockwise-generator.js";
 import { WallGenerator } from "../batch/wall-generator.js";
 
@@ -11,14 +11,13 @@ export class RecursiveDFSGenerator extends StrictBlockwiseGenerator {
 
     create(size : number, model: Model) : void {
         const grid = new WallGenerator().create(size);
-        const visited: boolean[][] = new Array(size).fill(false)
-            .map(() =>
-                new Array(size).fill(false)
-            );
-        let x = getRandomInt(1, size/2) * 2 + 1;
-        let y = getRandomInt(1, size/2) * 2 + 1;
+        const visited = get2dArray(size, false);
+        let x = getRandomInt(0, size/2) * 2 + 1;
+        let y = getRandomInt(0, size/2) * 2 + 1;
         model.regenerate(grid)
         this.carve(x, y, model, visited);
+        model.updateModel(1,1, State.BEGIN);
+        model.updateModel(size-2,size-2, State.END);
     }
 
     private carve(x: number, y: number, model: Model, visited: boolean[][]) {

@@ -1,7 +1,7 @@
 import { State } from "../../model/cell-state.js";
 import { Indices } from "../../model/indices.js";
 import { Model } from "../../model/model.js";
-import { getRandomInt } from "../../util.js";
+import { get2dArray, getRandomInt } from "../../util.js";
 import { WallGenerator } from "../batch/wall-generator.js";
 import { StrictBlockwiseGenerator } from "./strict-blockwise-generator.js";
 
@@ -9,14 +9,13 @@ export class RandomizedKruskal extends StrictBlockwiseGenerator {
     
     create(size : number, model: Model) : void {
         const grid = new WallGenerator().create(size);
-        const visited: boolean[][] = new Array(size).fill(false)
-            .map(() =>
-                new Array(size).fill(false)
-            );
+        const visited = get2dArray(size, false)
         model.regenerate(grid);
-        let x = getRandomInt(1, size/2) * 2 + 1;
-        let y = getRandomInt(1, size/2) * 2 + 1;
+        let x = getRandomInt(0, size/2) * 2 + 1;
+        let y = getRandomInt(0, size/2) * 2 + 1;
         this.carve(x, y, model, visited);
+        model.updateModel(1,1, State.BEGIN);
+        model.updateModel(size-2,size-2, State.END);
     }
 
     private carve(x: number, y: number, model: Model, visited: boolean[][]) : void {

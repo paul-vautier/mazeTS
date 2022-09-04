@@ -2,7 +2,7 @@ import { State } from "./model/cell-state.js";
 import { ModelListener } from "./model/model-listener.js";
 import { Model } from "./model/model.js";
 
-const speed = 1;
+const speed = 4;
 
 export class View implements ModelListener{
     grid: HTMLElement[][];
