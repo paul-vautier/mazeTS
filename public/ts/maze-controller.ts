@@ -1,39 +1,45 @@
 import { View } from "./view.js";
-import { State } from "./cell-state.js";
+import { State } from "./model/cell-state.js";
 import { MazeSolver } from "./solvers/maze-solver.js";
-import { MazeGenerator } from "./generators/maze-generator.js";
+import { MazeGenerator } from "./generators/algorithms/maze-generator.js";
+import { Model } from "./model/model.js";
+import { WallGenerator } from "./generators/batch/wall-generator.js";
+import { EmptyGenerator } from "./generators/batch/empty-generator.js";
+import { RecursiveDFSGenerator } from "./generators/algorithms/recurse-dfs-generator.js";
 
 export class MazeController {
     view: View;
-    model: State[][];
+    model: Model;
     size: number;
-    begin: [number, number] | undefined;
-    end: [number, number] | undefined;
+    begin: {x:number, y:number} | undefined;
+    end: {x:number, y:number} | undefined;
     dragging: boolean;
     solver: MazeSolver;
     generator: MazeGenerator;
     selectedState: State;
     constructor(size: number, solver: MazeSolver, generator: MazeGenerator) {
-        this.size = size;
+        this.size = 2*size+1;
         this.dragging = false
         this.generator = generator;
         document.addEventListener("mousedown", () => this.dragging = true)
         document.addEventListener("mouseup", () => this.dragging = false)
 
-        this.model = generator.create(size);
-
-        this.view = new View(  this.model);
+        this.model = new Model(generator);
+        this.model.regenerate(new EmptyGenerator().create(this.size));
+        this.view = new View(this.model);
 
         this.view.addEventListenerToEachCell("mouseover", (x, y) => this.toggleStateOnClickHandler(x, y));
         this.view.addEventListenerToEachCell("mousedown", (x, y) => this.toggleStateOnClickHandler(x, y, true));
-
+        
         this.solver = solver;
         solver.setOnCellUpdate(this.changeState.bind(this));
 
         solver.solve()
         this.addTileChangeEvent();
         this.addToggleCommandPanel();
-
+        this.addGeneratorChangeEvent("dfs", () => {
+            return new RecursiveDFSGenerator(this.size)
+        })
         this.selectedState = State.UNVISITED_CELL;
     }
 
@@ -46,7 +52,7 @@ export class MazeController {
             return
         }
         if (y >= 0 && y < this.size && x < this.size && x >= 0) {
-            let state = this.model[x][y];
+            let state = this.model.model[x][y];
             if (state == this.selectedState) {
                 this.changeState(x, y, State.UNVISITED_CELL);
             } else if (state != this.selectedState) {
@@ -58,15 +64,15 @@ export class MazeController {
     initState(x: number, y: number, state: State) {
         if (y >= 0 && y < this.size && x < this.size && x >= 0) {
             this.view.grid[x][y].classList.add(state);
-            this.model[x][y] = state;
+            this.model.model[x][y] = state;
         }
     }
 
     changeState(x: number, y: number, state: State) {
-        if (y >= 0 && y < this.size && x < this.size && x >= 0 && state != this.model[x][y]) {
-            this.view.grid[x][y].classList.remove(this.model[x][y]);
+        if (y >= 0 && y < this.size && x < this.size && x >= 0 && state != this.model.model[x][y]) {
+            this.view.grid[x][y].classList.remove(this.model.model[x][y]);
             this.view.grid[x][y].classList.add(state);
-            this.model[x][y] = state;
+            this.model.model[x][y] = state;
             this.view.grid[x][y].classList.add("flip");
         }
     }
@@ -86,6 +92,13 @@ export class MazeController {
                 });
             }
         });
+    }
+
+    addGeneratorChangeEvent(id: string, generatorProvider: ()=> MazeGenerator) {
+        document.getElementById(id)?.addEventListener('click', ()=> {
+            console.log('dsdsd')
+            generatorProvider().create(this.size, this.model);
+        })
     }
 
     changeSelectedState(state: string) {
@@ -114,5 +127,7 @@ export class MazeController {
             })
         });
     }
+
+    
 
 }

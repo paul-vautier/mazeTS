@@ -1,25 +1,73 @@
-import { State } from "./cell-state.js";
+import { State } from "./model/cell-state.js";
+import { ModelListener } from "./model/model-listener.js";
+import { Model } from "./model/model.js";
 
-export class View {
+export class View implements ModelListener{
     grid: HTMLElement[][];
     mazeParent : HTMLElement;
-    constructor(model : State[][]) {
+    eventsMap: Map<string, (x : number, y : number)=>void>
+    eventPoll: {type: string, callback :()=>void}[]
+    constructor(model : Model) {
         let mazeParent = document.getElementById("maze");
         if (!mazeParent) {
             throw Error("Couldn't find the #maze element");
         }
         this.mazeParent = mazeParent;
-        this.mazeParent.dataset.size = model.length.toString();
-        this.mazeParent.style.gridTemplateRows = `repeat(${model.length}, 1fr)`
-        this.mazeParent.style.gridTemplateColumns = `repeat(${model.length}, 1fr)`
+        this.mazeParent.dataset.size = model.model.length.toString();
+        this.mazeParent.style.gridTemplateRows = `repeat(${model.model.length}, 1fr)`
+        this.mazeParent.style.gridTemplateColumns = `repeat(${model.model.length}, 1fr)`
+        this.grid = model.model.map((array, x) => array.map((state, y) => this.createDiv(state, x, y)));
+        this.eventsMap = new Map();
+        this.eventPoll = []
 
-        this.grid = model.map((array, x) => array.map((state, y) => this.createDiv(state, x, y)));
+        this.pollEvents()
+        model.addListener(this);
     }
 
+    pollEvents() {
+        setInterval(() => {
+            if (this.eventPoll.length) {
+                let polled = this.eventPoll.shift();
+                polled?.callback();
+            }
+        }, 5);
+    }
+
+    onReset(model: State[][]): void {
+        this.eventPoll = []
+        this.eventPoll.push({
+            type:"reset",
+            callback: () => {
+                this.destroy();
+                this.mazeParent.dataset.size = model.length.toString();
+                this.mazeParent.style.gridTemplateRows = `repeat(${model.length}, 1fr)`
+                this.mazeParent.style.gridTemplateColumns = `repeat(${model.length}, 1fr)`
+                this.grid = model.map((array, x) => array.map((state, y) => this.createDiv(state, x, y)));
+                this.eventsMap.forEach((callback: (x : number, y : number)=>void, key: string) => {
+                    this.grid.forEach((array, i) => array.forEach((cell, j)=> cell.addEventListener(key, ()=>callback(i,j))));
+                })
+            }
+        })
+    }
+
+    onUpdate(x: number, y: number, state: State): void {
+        this.eventPoll.push({
+            type:"update",
+            callback: () => {
+                this.grid[x][y].classList.remove(State.BEGIN);
+                this.grid[x][y].classList.remove(State.END);
+                this.grid[x][y].classList.remove(State.WALL);
+                this.grid[x][y].classList.remove(State.PATH);
+                this.grid[x][y].classList.remove(State.UNVISITED_CELL);
+                this.grid[x][y].classList.remove(State.VISITED_CELL);
+                this.grid[x][y].classList.add(state);
+                this.grid[x][y].classList.add('flip');
+            }
+        });
+    }
 
     flipTransitionHandler(x: number, y: number) {
         this.grid[x][y].classList.remove("flip")
-        // this.grid[x][y].classList.remove("grow")
     }
 
     createDiv(state : State, x : number, y : number) : HTMLElement {
@@ -34,6 +82,7 @@ export class View {
     }
 
     addEventListenerToEachCell(event : string, callback : (x : number, y : number)=>void) {
+        this.eventsMap.set(event, callback);
         this.grid.forEach((array, i) => array.forEach((cell, j)=> cell.addEventListener(event, ()=>callback(i,j))));
     }
 
