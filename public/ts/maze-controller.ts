@@ -6,13 +6,15 @@ import { Model } from "./model/model.js";
 import { WallGenerator } from "./generators/batch/wall-generator.js";
 import { EmptyGenerator } from "./generators/batch/empty-generator.js";
 import { RecursiveDFSGenerator } from "./generators/algorithms/recurse-dfs-generator.js";
+import { Indices } from "./model/indices.js";
+import { RandomizedKruskal } from "./generators/algorithms/randomized-kruskal.js";
 
 export class MazeController {
     view: View;
     model: Model;
     size: number;
-    begin: {x:number, y:number} | undefined;
-    end: {x:number, y:number} | undefined;
+    begin: Indices | undefined;
+    end: Indices | undefined;
     dragging: boolean;
     solver: MazeSolver;
     generator: MazeGenerator;
@@ -39,6 +41,10 @@ export class MazeController {
         this.addToggleCommandPanel();
         this.addGeneratorChangeEvent("dfs", () => {
             return new RecursiveDFSGenerator(this.size)
+        })
+
+        this.addGeneratorChangeEvent("kruskal", () => {
+            return new RandomizedKruskal(this.size)
         })
         this.selectedState = State.UNVISITED_CELL;
     }

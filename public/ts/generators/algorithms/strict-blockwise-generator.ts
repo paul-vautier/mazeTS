@@ -1,4 +1,5 @@
 import { State } from "../../model/cell-state.js";
+import { Indices } from "../../model/indices.js";
 import { Model } from "../../model/model.js";
 import { MazeGenerator } from "./maze-generator.js";
 
@@ -10,7 +11,7 @@ export abstract class StrictBlockwiseGenerator implements MazeGenerator {
 
     abstract create(size : number, model: Model) : void;
 
-    getCandidates(x: number, y: number, state: State[][], visited: boolean[][]) : {x: number, y:number}[] {
+    getCandidates(x: number, y: number, state: State[][], visited: boolean[][]) : Indices[] {
         let offsets = [
             {x:-1, y: 0},
             {x: 1, y: 0},

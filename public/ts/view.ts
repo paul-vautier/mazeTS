@@ -2,6 +2,8 @@ import { State } from "./model/cell-state.js";
 import { ModelListener } from "./model/model-listener.js";
 import { Model } from "./model/model.js";
 
+const speed = 1;
+
 export class View implements ModelListener{
     grid: HTMLElement[][];
     mazeParent : HTMLElement;
@@ -30,7 +32,7 @@ export class View implements ModelListener{
                 let polled = this.eventPoll.shift();
                 polled?.callback();
             }
-        }, 5);
+        }, speed);
     }
 
     onReset(model: State[][]): void {
