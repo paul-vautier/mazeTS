@@ -1,3 +1,4 @@
+import { StateUpdate } from '../generators/algorithms/state-update.js';
 import {State} from '../model/cell-state.js'
 import { Indices } from '../model/indices.js';
 import { Model } from '../model/model.js';
@@ -7,9 +8,16 @@ export abstract class MazeSolver {
         this.model = model;
     }
 
-    abstract solve(x: number, y: number) : Indices[];
+    solve(x: number, y: number) : void {
+        let [updates, indices] = this.doSolve(x, y);
 
-    getCandidates(x: number, y: number, state: State[][], visited: boolean[][]) : Indices[] {
+        updates.forEach(update =>this.model.updateModel(update.indices.x, update.indices.y, update.state));
+        indices.forEach(indice =>this.model.updateModel(indice.x, indice.y, State.PATH));
+    }
+
+    protected abstract doSolve(x: number, y: number) : [StateUpdate[], Indices[]];
+
+    protected getCandidates(x: number, y: number, state: State[][], visited: boolean[][]) : Indices[] {
         let offsets = [
             {x:-1, y: 0},
             {x: 1, y: 0},

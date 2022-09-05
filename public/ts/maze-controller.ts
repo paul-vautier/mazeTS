@@ -3,7 +3,7 @@ import { RandomizedKruskal } from "./generators/algorithms/randomized-kruskal.js
 import { RecursiveDFSGenerator } from "./generators/algorithms/recurse-dfs-generator.js";
 import { State } from "./model/cell-state.js";
 import { Model } from "./model/model.js";
-import { BFSSolver } from "./solvers/bfs-solver.js";
+import { BFSSolver } from "./solvers/impl/bfs-solver.js";
 import { MazeSolver } from "./solvers/maze-solver.js";
 import { View } from "./view.js";
 
@@ -106,9 +106,7 @@ export class MazeController {
     addSolverChangeEvent(id: string, solverProvider: ()=> MazeSolver) {
         document.getElementById(id)?.addEventListener('click', () => {
             if (this.model.begin) {
-                solverProvider().solve(this.model.begin.x, this.model.begin.y).forEach((indice)=> {
-                    this.model.updateModel(indice.x, indice.y, State.PATH);
-                });
+                solverProvider().solve(this.model.begin.x, this.model.begin.y);
             }
         })
     }

@@ -1,6 +1,7 @@
 import { State } from "./cell-state.js";
 import { ModelListener } from "./model-listener.js";
 import { Indices } from "./indices.js";
+import { StateUpdate } from "../generators/algorithms/state-update.js";
 
 export class Model {
     model: State[][];
