@@ -27,10 +27,14 @@ export class BFSSolver extends MazeSolver {
 
             visited[position.x][position.y] = true;
             this.model.updateModel(position.x, position.y, State.VISITED_CELL);
-            this.getCandidates(position.x, position.y, this.model.model, visited).forEach((candidate) => {
-                let newPath = structuredClone(path).concat([candidate]);
-                queue.push([candidate, newPath]);
-            });
+            this.getCandidates(position.x, position.y, this.model.model, visited)
+                .filter((value) => {
+                    return queue.findIndex((item)=> item[0].x === value.x && item[0].y === value.y) === -1;
+                })
+                .forEach((candidate) => {
+                    let newPath = structuredClone(path).concat([candidate]);
+                    queue.push([candidate, newPath]);
+                });
         }
         return []
     }
