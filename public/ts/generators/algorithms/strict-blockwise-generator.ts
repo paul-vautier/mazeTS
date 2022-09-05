@@ -1,15 +1,31 @@
 import { State } from "../../model/cell-state.js";
 import { Indices } from "../../model/indices.js";
 import { Model } from "../../model/model.js";
-import { MazeGenerator } from "./maze-generator.js";
+import { MazeGenerator } from "../maze-generator.js";
+import { RealTimeGenerator } from "./real-time-generator.js";
 
-export abstract class StrictBlockwiseGenerator implements MazeGenerator {
+/**
+ * A generator that can find candidates to generate a maze for a 2D grid with cell-thick walls (as opposed to infinitely thin walls)
+ * Thus, potential cells are cells which indices match the condition x, y in 2k + 1, with k in [0, (size-1) / 2]
+ * This forces the maze to have an odd amount of cells
+ * 
+ * o => Potential cells
+ * x => Walls (that can be carved)
+ * X => Walls that will never be carved
+ * # # # # # # # #
+ * # o x o x o x #
+ * # x X x X x x #
+ * # o x o x o x #
+ * # x X x X x x # 
+ * # o x o x o x #
+ * # # # # # # # #
+ */
+export abstract class StrictBlockwiseGenerator extends RealTimeGenerator {
     size: number
     constructor(size: number) {
+        super();
         this.size = size;
     }
-
-    abstract create(size : number, model: Model) : void;
 
     getCandidates(x: number, y: number, state: State[][], visited: boolean[][]) : Indices[] {
         let offsets = [

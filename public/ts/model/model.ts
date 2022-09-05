@@ -1,5 +1,4 @@
 import { State } from "./cell-state.js";
-import { MazeGenerator } from "../generators/algorithms/maze-generator.js";
 import { ModelListener } from "./model-listener.js";
 import { Indices } from "./indices.js";
 

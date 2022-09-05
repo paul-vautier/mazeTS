@@ -27,10 +27,16 @@ export class View implements ModelListener{
     }
 
     pollEvents() {
-        setInterval(() => {
+        let interval = setInterval(() => {
             if (this.eventPoll.length) {
                 let polled = this.eventPoll.shift();
                 polled?.callback();
+                if ("reset" === polled?.type) {
+                    clearInterval(interval)
+                    setTimeout(()=> {
+                        this.pollEvents();
+                    }, 1000);
+                }
             }
         }, speed);
     }

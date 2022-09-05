@@ -5,9 +5,9 @@ import { Model } from "./model/model.js";
 import { View } from "./view.js";
 
 window.addEventListener("load", () => {
-    let size = 15;
+    let size = 5;
     let model = new Model();
-    model.regenerate(new EmptyGenerator().create(2*size + 1));
+    new EmptyGenerator().create(2*size + 1, model);
     let view = new View(model);
 
     let maze = new MazeController(size, model, view, new BFSSolver(model), new EmptyGenerator());

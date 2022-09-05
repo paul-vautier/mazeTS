@@ -3,30 +3,39 @@ import { Indices } from "../../model/indices.js";
 import { Model } from "../../model/model.js";
 import { get2dArray, getRandomInt } from "../../util.js";
 import { WallGenerator } from "../batch/wall-generator.js";
+import { StateUpdate } from "./state-update.js";
 import { StrictBlockwiseGenerator } from "./strict-blockwise-generator.js";
 
+/**
+ * Uses Randomized Kruskal algorithm.
+ * As the graph is not weighted, it resorts to simply fetching all potential neighbours and taking one randomly
+ */
 export class RandomizedKruskal extends StrictBlockwiseGenerator {
     
-    create(size : number, model: Model) : void {
-        const grid = new WallGenerator().create(size);
+    doCreate(size : number, model: Model) : StateUpdate[] {
+        new WallGenerator().create(size, model);
         const visited = get2dArray(size, false)
-        model.regenerate(grid);
-        let x = getRandomInt(0, size/2) * 2 + 1;
-        let y = getRandomInt(0, size/2) * 2 + 1;
-        this.carve(x, y, model, visited);
-        model.updateModel(1,1, State.BEGIN);
-        model.updateModel(size-2,size-2, State.END);
+        let x = getRandomInt(0, (size-1)/2) * 2 + 1;
+        let y = getRandomInt(0, (size-1)/2) * 2 + 1;
+        let updates = this.carve(x, y, model, visited);
+
+        updates.push({indices :{x:1, y:1}, state:State.BEGIN});
+        updates.push({indices :{x: size-2, y: size-2}, state:State.END});
+        return updates;
     }
 
-    private carve(x: number, y: number, model: Model, visited: boolean[][]) : void {
+    private carve(x: number, y: number, model: Model, visited: boolean[][]) : StateUpdate[] {
         let indices : Indices[];
+        let updates : StateUpdate[]
+        updates = []
+
         indices = [{x: x, y: y}];
         visited[x][y] = true;
         let candidatesAndOffsets: [Indices, Indices][]
-        model.updateModel(x, y, State.UNVISITED_CELL);
+        updates.push({indices: {x, y}, state: State.UNVISITED_CELL})
 
         candidatesAndOffsets = this.getAllCandidates(indices, model, visited);
-        
+
         while(candidatesAndOffsets.length) {
 
             let randIndex = getRandomInt(0, candidatesAndOffsets.length);
@@ -36,11 +45,13 @@ export class RandomizedKruskal extends StrictBlockwiseGenerator {
             let offset = candidateAndOffset[1];
             indices.push(candidate);
             visited[candidate.x][candidate.y] = true;
-            model.updateModel(candidate.x, candidate.y, State.UNVISITED_CELL);
-            model.updateModel(offset.x, offset.y, State.UNVISITED_CELL);
+
+            updates.push({indices: {x: candidate.x, y: candidate.y}, state: State.UNVISITED_CELL})
+            updates.push({indices: {x: offset.x, y: offset.y}, state: State.UNVISITED_CELL})
 
             candidatesAndOffsets = this.getAllCandidates(indices, model, visited);
         }
+        return updates;
     }
 
     private getAllCandidates(indices : Indices[], model: Model, visited: boolean[][]) {

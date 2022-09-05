@@ -1,9 +1,11 @@
 import { State } from "../../model/cell-state.js";
-import { BatchGenerator } from "./batch-generator.js";
+import { Model } from "../../model/model.js";
+import { BatchGenerator } from "../batch-generator.js";
 
 
-export class WallGenerator implements BatchGenerator {
-    create(size : number): State[][] {
+export class WallGenerator extends BatchGenerator {
+    
+    doCreate(size: number, model: Model): [boolean, State[][]] {
         let grid : State[][];
         grid = [];
         for (let i = 0; i < size; i++) {
@@ -12,7 +14,7 @@ export class WallGenerator implements BatchGenerator {
                 grid[i].push(State.WALL);
             }
         }
-        return grid;
+        return [true, grid];
     }
 
 }

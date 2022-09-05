@@ -1,3 +1,4 @@
+import { ClearedMazeGenerator } from "../generators/batch/cleared-maze-generator.js";
 import { State } from "../model/cell-state.js";
 import { Indices } from "../model/indices.js";
 import { Model } from "../model/model.js";
@@ -10,6 +11,7 @@ export class BFSSolver extends MazeSolver {
     }
 
     solve(x: number, y:number): Indices[] {
+        new ClearedMazeGenerator().create(this.model.model.length, this.model);
         let queue : [Indices, Indices[]][]
         queue = [[{x: x, y: y}, []]];
         let visited = get2dArray(this.model.model.length, false);

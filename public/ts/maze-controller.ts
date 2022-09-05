@@ -1,4 +1,4 @@
-import { MazeGenerator } from "./generators/algorithms/maze-generator.js";
+import { MazeGenerator } from "./generators/maze-generator.js";
 import { RandomizedKruskal } from "./generators/algorithms/randomized-kruskal.js";
 import { RecursiveDFSGenerator } from "./generators/algorithms/recurse-dfs-generator.js";
 import { State } from "./model/cell-state.js";
@@ -106,9 +106,7 @@ export class MazeController {
     addSolverChangeEvent(id: string, solverProvider: ()=> MazeSolver) {
         document.getElementById(id)?.addEventListener('click', () => {
             if (this.model.begin) {
-                let arr = solverProvider().solve(this.model.begin.x, this.model.begin.y);
-                console.log(...arr)
-                arr.forEach((indice)=> {
+                solverProvider().solve(this.model.begin.x, this.model.begin.y).forEach((indice)=> {
                     this.model.updateModel(indice.x, indice.y, State.PATH);
                 });
             }
