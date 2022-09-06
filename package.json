@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/PeP-dev/mazeTS#readme",
   "dependencies": {
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "tsc": "^2.0.4"
   }
 }
