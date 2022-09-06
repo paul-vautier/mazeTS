@@ -30,6 +30,7 @@ export class Model {
         if (state == State.END) {
             if (this.end) {
                 let end = this.end;
+                this.model[end.x][end.y] = State.UNVISITED_CELL
                 this.listeners.forEach(listener=>listener.onUpdate(end.x, end.y, State.UNVISITED_CELL))    
             }
             this.end = {x: x, y: y};
@@ -37,6 +38,7 @@ export class Model {
         if (state == State.BEGIN) {
             if (this.begin) {
                 let begin = this.begin
+                this.model[begin.x][begin.y] = State.UNVISITED_CELL
                 this.listeners.forEach(listener=>listener.onUpdate(begin.x, begin.y, State.UNVISITED_CELL))
             }
             this.begin= {x: x, y: y};

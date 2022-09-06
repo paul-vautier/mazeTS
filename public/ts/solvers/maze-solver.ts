@@ -9,6 +9,9 @@ export abstract class MazeSolver {
     }
 
     solve(x: number, y: number) : void {
+        if (!this.model.end || !this.model.begin) {
+            throw Error("A solver requires a beginning and an end to be set");
+        }
         let [updates, indices] = this.doSolve(x, y);
 
         updates.forEach(update =>this.model.updateModel(update.indices.x, update.indices.y, update.state));

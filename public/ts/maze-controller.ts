@@ -6,6 +6,7 @@ import { Model } from "./model/model.js";
 import { BFSSolver } from "./solvers/impl/bfs-solver.js";
 import { MazeSolver } from "./solvers/maze-solver.js";
 import { View } from "./view.js";
+import { AstarSolver } from "./solvers/impl/astar-solver.js";
 
 export class MazeController {
     view: View;
@@ -40,6 +41,10 @@ export class MazeController {
 
         this.addSolverChangeEvent("bfs", () => {
             return new BFSSolver(this.model);
+        }); 
+
+        this.addSolverChangeEvent("astar", () => {
+            return new AstarSolver(this.model);
         }); 
 
         this.selectedState = State.UNVISITED_CELL;

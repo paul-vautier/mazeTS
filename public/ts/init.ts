@@ -5,7 +5,7 @@ import { Model } from "./model/model.js";
 import { View } from "./view.js";
 
 window.addEventListener("load", () => {
-    let size = 4;
+    let size = 15;
     let model = new Model();
     new EmptyGenerator().create(2*size + 1, model);
     let view = new View(model);
