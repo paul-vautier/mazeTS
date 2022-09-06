@@ -19,22 +19,6 @@ permissions:
 concurrency:
   group: "pages"
   cancel-in-progress: true
-
-jobs:
-  tsc:
-    name: tsc
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - name: install node v12
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12
-    - name: yarn install
-      run: yarn install
-    - name: tsc
-      uses: icrawl/action-tsc@v1
-
   # Single deploy job since we're just deploying
   deploy:
     environment:
@@ -43,9 +27,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      - name: Typescript compiler
-        uses: iCrawl/action-tsc@v1
+        uses: actions/checkout@v3'
+      - uses: actions/checkout@v1
+      - name: install node v12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: yarn install
+        run: yarn install
+      - name: tsc
+        uses: icrawl/action-tsc@v1
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
