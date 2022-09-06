@@ -73,7 +73,7 @@ export class MazeController {
     initState(x: number, y: number, state: State) {
         if (y >= 0 && y < this.size && x < this.size && x >= 0) {
             this.view.grid[x][y].classList.add(state);
-            this.model.model[x][y] = state;
+            this.model.updateModel(x, y, state);
         }
     }
 

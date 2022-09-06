@@ -14,8 +14,37 @@ export class Model {
         this.listeners = []
     }
 
-    regenerate(state: State[][]) {
-        this.model = state
+    regenerate(grid: State[][]) {
+        let hasEnd = false;
+        let hasBegin = false;
+        grid.forEach((array, x)=> {
+            array.forEach((state, y)=> {
+                if (state == State.END) {
+                    if (hasEnd) {
+                        throw Error("A maze cannot have multiple endings");
+                    }
+                    this.end = {x, y};
+                    hasEnd = true;
+                }
+                if (state == State.BEGIN) {
+                    if (hasBegin) {
+                        throw Error("A maze cannot have multiple beginnings");
+                    }
+                    this.end = {x, y};
+                    hasBegin = true;
+                }
+            })
+        });
+
+        if (!hasBegin) {
+            this.begin = undefined
+        }
+
+        if (!hasEnd) {
+            this.end = undefined
+        }
+
+        this.model = grid
         this.listeners.forEach(listener=>listener.onReset(structuredClone(this.model)))
     }
 
@@ -27,6 +56,7 @@ export class Model {
             return;
         } 
         this.model[x][y] = state;
+
         if (state == State.END) {
             if (this.end) {
                 let end = this.end;
@@ -35,6 +65,7 @@ export class Model {
             }
             this.end = {x: x, y: y};
         }
+
         if (state == State.BEGIN) {
             if (this.begin) {
                 let begin = this.begin
