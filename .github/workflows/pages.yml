@@ -36,7 +36,9 @@ jobs:
       - name: npm install
         run: npm install      
       - name: install ts
-        run: npm install -g typescript
+        run: npm install -g typescript      
+      - name: compile ts
+        run: tsc --project
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
