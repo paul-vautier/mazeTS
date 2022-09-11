@@ -5,6 +5,7 @@ import { Indices } from "../../model/indices.js";
 import { get2dArray, PriorityQueue } from "../../util.js";
 import { MazeSolver } from "../maze-solver.js";
 
+// FIXME : Acts as a BFS if begin.x >= end.x 
 export class AstarSolver extends MazeSolver {
     doSolve(x: number, y: number): [StateUpdate[], Indices[]] {
         new ClearedMazeGenerator().create(this.model.model.length, this.model);
@@ -15,10 +16,10 @@ export class AstarSolver extends MazeSolver {
             let heurB = this.getHeuristic(b, this.model.end!, paths)
 
             if (heurA == heurB) {
-                return Math.abs(a.x - this.model.end!.x) + Math.abs(a.y - this.model.end!.y) <= Math.abs(b.x - this.model.end!.x) + Math.abs(b.y - this.model.end!.y) 
+                return Math.abs(a.x - this.model.end!.x) + Math.abs(a.y - this.model.end!.y) < Math.abs(b.x - this.model.end!.x) + Math.abs(b.y - this.model.end!.y) 
             }
 
-            return heurA <= heurB; 
+            return heurA < heurB; 
         });
         let indice : Indices;
         let begin : Indices = {x:x, y:y};

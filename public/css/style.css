@@ -5,6 +5,8 @@
     --visited: rgb(88, 129, 87);
     --wall: rgb(116, 77, 66);
     --goal: rgb(39,154,241);
+    --path: rgb(57,67,183);
+    --tile: rgb(255, 165, 105);
 }
 
 html,
@@ -161,7 +163,7 @@ div.maze-end > div {
 }
 
 div.maze-path {
-    background-color: rgb(57,67,183);
+    background-color: var(--path);
 }
 
 .flip {
@@ -174,7 +176,7 @@ div.maze-path {
     min-width: 40px;
     padding:5px;
     border-radius: 5px;
-    border: 2px solid rgb(255, 165, 105);
+    border: 2px solid var(--tile);
 }
 .tile[data-tile] {
     border-color: var(--bg);

@@ -5,18 +5,18 @@ import { State } from "./model/cell-state.js";
 import { Model } from "./model/model.js";
 import { BFSSolver } from "./solvers/impl/bfs-solver.js";
 import { MazeSolver } from "./solvers/maze-solver.js";
-import { View } from "./view.js";
 import { AstarSolver } from "./solvers/impl/astar-solver.js";
+import { EventPollingView } from "./views/view.js";
 
 export class MazeController {
-    view: View;
+    view: EventPollingView;
     model: Model;
     size: number;
     dragging: boolean;
     solver: MazeSolver;
     generator: MazeGenerator;
     selectedState: State;
-    constructor(size: number, model: Model, view: View, solver: MazeSolver, generator: MazeGenerator) {
+    constructor(size: number, model: Model, view: EventPollingView, solver: MazeSolver, generator: MazeGenerator) {
         this.size = 2*size+1;
         this.dragging = false
         this.generator = generator;
@@ -24,7 +24,7 @@ export class MazeController {
         document.addEventListener("mouseup", () => this.dragging = false)
         this.view = view;
         this.model = model;
-        this.view.addEventListenerToEachCell("mouseover", (x, y) => this.toggleStateOnClickHandler(x, y));
+        this.view.addEventListenerToEachCell("mousemove", (x, y) => this.toggleStateOnClickHandler(x, y));
         this.view.addEventListenerToEachCell("mousedown", (x, y) => this.toggleStateOnClickHandler(x, y, true));
         
         this.solver = solver;
@@ -48,6 +48,7 @@ export class MazeController {
         }); 
 
         this.selectedState = State.UNVISITED_CELL;
+        this.model.regenerate(this.model.model)
     }
 
     destroyMaze() {
@@ -72,17 +73,13 @@ export class MazeController {
 
     initState(x: number, y: number, state: State) {
         if (y >= 0 && y < this.size && x < this.size && x >= 0) {
-            this.view.grid[x][y].classList.add(state);
             this.model.updateModel(x, y, state);
         }
     }
 
     changeState(x: number, y: number, state: State) {
         if (y >= 0 && y < this.size && x < this.size && x >= 0 && state != this.model.model[x][y]) {
-            this.view.grid[x][y].classList.remove(this.model.model[x][y]);
-            this.view.grid[x][y].classList.add(state);
             this.model.updateModel(x, y, state);
-            this.view.grid[x][y].classList.add("flip");
         }
     }
 
