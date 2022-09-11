@@ -29,18 +29,21 @@ export abstract class EventPollingView implements ModelListener {
     
     pollEvents() {
         let elt;
+        let continueLoop;
+
         let interval = setInterval(() => {
-            for(let i = 0; i < cellUpdateCount && (elt = this.eventPoll.shift()) != null; i++) {
+            continueLoop = true;
+            for(let i = 0; continueLoop && i <  cellUpdateCount && (elt = this.eventPoll.shift()) != null; i++) {
                 elt.callback();
                 if ("reset" === elt.type) {
-                    clearInterval(interval)
-                    setTimeout(()=> {
-                        this.pollEvents();
-                    }, 1000);
-                    break;
+                    continueLoop = this.modelResetPolling(interval)
                 }
             }
         }, speed);
+    }
+
+    modelResetPolling(interval : number) : boolean{
+        return true;
     }
 
     onReset(model: State[][]): void {

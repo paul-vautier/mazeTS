@@ -33,6 +33,14 @@ export class ViewGrid extends EventPollingView{
         this.grid[x][y].classList.add('flip');
     }
 
+    modelResetPolling(intervalId : number): boolean {
+        clearInterval(intervalId)
+        setTimeout(()=> {
+            this.pollEvents();
+        }, 1000);
+        return false;
+    }
+
     flipTransitionHandler(x: number, y: number) {
         this.grid[x][y].classList.remove("flip")
     }

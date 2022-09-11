@@ -59,16 +59,7 @@ export class MazeController {
         if (!this.dragging && !force) {
             return
         }
-        if (y >= 0 && y < this.size && x < this.size && x >= 0) {
-
-            if (this.model.model[x][y] == State.END || this.model.model[x][y] == State.BEGIN) {
-                return;
-            }
-            let state = this.model.model[x][y];
-            if (state != this.selectedState) {
-                this.changeState(x, y, this.selectedState);
-            }
-        }
+        this.changeState(x, y, this.selectedState);
     }
 
     initState(x: number, y: number, state: State) {

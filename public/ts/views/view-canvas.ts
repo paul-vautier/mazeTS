@@ -30,7 +30,6 @@ export class ViewCanvas extends EventPollingView {
         this.ctx = ctx;
     }
 
-
     doOnReset(model: State[][]): void {
         if (!model.length || !model[0].length) {
             throw Error("Invalid grid");
@@ -59,7 +58,6 @@ export class ViewCanvas extends EventPollingView {
             let rect = this.canvas.getBoundingClientRect();
             let indexX = Math.floor((event.clientX  - rect.left) / this.rectWidth);
             let indexY = Math.floor((event.clientY  - rect.top) / this.rectHeight);
-            console.log({indexX, indexY})
             callback(indexX, indexY);
         });
     }

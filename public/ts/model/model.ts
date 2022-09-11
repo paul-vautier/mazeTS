@@ -30,7 +30,7 @@ export class Model {
                     if (hasBegin) {
                         throw Error("A maze cannot have multiple beginnings");
                     }
-                    this.end = {x, y};
+                    this.begin = {x, y};
                     hasBegin = true;
                 }
             })
