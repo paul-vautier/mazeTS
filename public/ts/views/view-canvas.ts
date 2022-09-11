@@ -6,8 +6,6 @@ import { EventPollingView } from "./view.js";
 export class ViewCanvas extends EventPollingView {
     ctx : CanvasRenderingContext2D;
     canvas : HTMLCanvasElement;
-    width : number = 800;
-    height : number = 800;
     rectWidth : number;
     rectHeight : number;
 
@@ -17,12 +15,13 @@ export class ViewCanvas extends EventPollingView {
         if (!model.model.length || !model.model[0].length) {
             throw Error("Invalid grid");
         }
-        this.rectHeight = this.height / model.model[0].length;
-        this.rectWidth = this.width / model.model.length;
         this.canvas = document.createElement('canvas');
-        this.canvas.setAttribute('height', this.height.toString())
-        this.canvas.setAttribute('width', this.width.toString())
         this.mazeParent.appendChild(this.canvas);
+        this.mazeParent.classList.add('canvas');
+        this.canvas.width  = this.canvas.offsetWidth;
+        this.canvas.height = this.canvas.offsetHeight;
+        this.rectHeight = this.canvas.height / model.model[0].length;
+        this.rectWidth = this.canvas.width / model.model.length;
         let ctx = this.canvas.getContext("2d");
         if (!ctx) {
             throw Error("Couldn't get a canvas 2d context");
@@ -34,9 +33,9 @@ export class ViewCanvas extends EventPollingView {
         if (!model.length || !model[0].length) {
             throw Error("Invalid grid");
         }
-        this.rectHeight = this.height / model[0].length;
-        this.rectWidth = this.width / model.length;
-        this.ctx.clearRect(0, 0, this.width, this.height);
+        this.rectHeight = this.canvas.height / model[0].length;
+        this.rectWidth = this.canvas.width / model.length;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         model.forEach((array, x)=> {
             array.forEach((state, y)=> {
                 this.ctx.fillStyle = this.getColor(state);

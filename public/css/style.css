@@ -40,22 +40,30 @@ main > * {
 }
 
 #maze {
-    display: inline-grid;
-    gap: 3px;
-    padding: 50px;
-    aspect-ratio: 1;
+    flex-grow: 3;
     max-height:90vh;
     max-width:90vh;
-    flex-grow: 3;
+    padding: 50px;
+
+}
+#maze.grid {
+    display: inline-grid;
+    gap: 3px;
+    aspect-ratio: 1;
 }
 
-#maze>div {
+#maze.grid>div {
     border-radius: 2px;
     min-height: 1px;
     aspect-ratio: 1;
     opacity: 0;
     transition: background-color .5s, transform .5s, rotate .2s;
     animation: grow .5s, show .5s forwards;
+}
+
+#maze.canvas > canvas {
+    width: 100%;
+    height: 100%;
 }
 
 .panel {

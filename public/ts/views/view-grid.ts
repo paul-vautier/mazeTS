@@ -14,6 +14,7 @@ export class ViewGrid extends EventPollingView{
     doOnReset(model: State[][]): void {
         this.destroy();
         this.mazeParent.dataset.size = model.length.toString();
+        this.mazeParent.classList.add('grid');
         this.mazeParent.style.gridTemplateRows = `repeat(${model.length}, 1fr)`
         this.mazeParent.style.gridTemplateColumns = `repeat(${model.length}, 1fr)`
         this.grid = model.map((array, x) => array.map((state, y) => this.createDiv(state, x, y)));
