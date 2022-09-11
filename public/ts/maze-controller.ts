@@ -1,5 +1,5 @@
 import { MazeGenerator } from "./generators/maze-generator.js";
-import { RandomizedKruskal } from "./generators/algorithms/randomized-kruskal.js";
+import { RandomizedPrim } from "./generators/algorithms/randomized-prim.js";
 import { RecursiveDFSGenerator } from "./generators/algorithms/recurse-dfs-generator.js";
 import { State } from "./model/cell-state.js";
 import { Model } from "./model/model.js";
@@ -36,7 +36,7 @@ export class MazeController {
         })
 
         this.addGeneratorChangeEvent("kruskal", () => {
-            return new RandomizedKruskal(this.size)
+            return new RandomizedPrim(this.size)
         })
 
         this.addSolverChangeEvent("bfs", () => {
