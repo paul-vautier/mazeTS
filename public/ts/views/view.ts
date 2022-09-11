@@ -2,20 +2,29 @@ import { State } from "../model/cell-state.js";
 import { Model } from "../model/model.js";
 import { ModelListener } from "../model/model-listener.js";
 
-const speed = 4;
-const cellUpdateCount = 100;
 export abstract class EventPollingView implements ModelListener {
     mazeParent : HTMLElement;
     
     eventsMap: Map<string, (x : number, y : number)=>void>
     eventPoll: {type: string, callback :()=>void}[]
-
+    interval: number | undefined;
+    
+    speed = 4;
+    cellUpdateCount = 10;
     constructor(model : Model) {
         let mazeParent = document.getElementById("maze");
         if (!mazeParent) {
             throw Error("Couldn't find the #maze element");
         }
-
+        let rateElement = document.getElementById("refreshRate")
+        if (rateElement instanceof HTMLInputElement) {
+            rateElement.value = (1000 / this.speed).toString()
+        }
+        
+        let countElement = document.getElementById("refreshCount")
+        if (countElement instanceof HTMLInputElement) {
+            countElement.value = this.cellUpdateCount.toString()
+        }
         
         this.eventsMap = new Map();
         this.eventPoll = []
@@ -25,21 +34,32 @@ export abstract class EventPollingView implements ModelListener {
         this.mazeParent = mazeParent;
         model.addListener(this);
     }
-
     
+    changeRefreshRate(speed: number) {
+        clearInterval(this.interval);
+        this.speed = speed;
+        this.pollEvents();
+    }
+
+    changeRefreshCount(count: number) {
+        clearInterval(this.interval);
+        this.cellUpdateCount = count;
+        this.pollEvents();
+    }
+
     pollEvents() {
         let elt;
         let continueLoop;
 
-        let interval = setInterval(() => {
+        this.interval = setInterval(() => {
             continueLoop = true;
-            for(let i = 0; continueLoop && i <  cellUpdateCount && (elt = this.eventPoll.shift()) != null; i++) {
+            for(let i = 0; continueLoop && i <  this.cellUpdateCount && (elt = this.eventPoll.shift()) != null; i++) {
                 elt.callback();
                 if ("reset" === elt.type) {
-                    continueLoop = this.modelResetPolling(interval)
+                    continueLoop = this.modelResetPolling(this.interval!)
                 }
             }
-        }, speed);
+        }, this.speed);
     }
 
     modelResetPolling(interval : number) : boolean{

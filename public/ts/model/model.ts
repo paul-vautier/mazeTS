@@ -80,4 +80,11 @@ export class Model {
     addListener(listener: ModelListener) {
         this.listeners.push(listener);
     }
+
+    removeListener(listener: ModelListener) {
+        let index = this.listeners.indexOf(listener);
+        if (index != -1) {
+            this.listeners.splice(index, 1);
+        }
+    }
 }

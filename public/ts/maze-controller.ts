@@ -7,6 +7,7 @@ import { BFSSolver } from "./solvers/impl/bfs-solver.js";
 import { MazeSolver } from "./solvers/maze-solver.js";
 import { AstarSolver } from "./solvers/impl/astar-solver.js";
 import { EventPollingView } from "./views/view.js";
+import { BinaryTreeGenerator } from "./generators/algorithms/binary-tree.js";
 
 export class MazeController {
     view: EventPollingView;
@@ -16,17 +17,18 @@ export class MazeController {
     solver: MazeSolver;
     generator: MazeGenerator;
     selectedState: State;
-    constructor(size: number, model: Model, view: EventPollingView, solver: MazeSolver, generator: MazeGenerator) {
-        this.size = 2*size+1;
+    constructor(model: Model, view: EventPollingView, solver: MazeSolver, generator: MazeGenerator) {
+        this.size = model.model.length;
         this.dragging = false
         this.generator = generator;
         document.addEventListener("mousedown", () => this.dragging = true)
         document.addEventListener("mouseup", () => this.dragging = false)
         this.view = view;
         this.model = model;
+
         this.view.addEventListenerToEachCell("mousemove", (x, y) => this.toggleStateOnClickHandler(x, y));
         this.view.addEventListenerToEachCell("mousedown", (x, y) => this.toggleStateOnClickHandler(x, y, true));
-        
+
         this.solver = solver;
 
         this.addTileChangeEvent();
@@ -39,6 +41,10 @@ export class MazeController {
             return new RandomizedPrim(this.size)
         })
 
+        this.addGeneratorChangeEvent("btree", () => {
+            return new BinaryTreeGenerator(this.size)
+        })
+
         this.addSolverChangeEvent("bfs", () => {
             return new BFSSolver(this.model);
         }); 
@@ -46,6 +52,17 @@ export class MazeController {
         this.addSolverChangeEvent("astar", () => {
             return new AstarSolver(this.model);
         }); 
+
+        document.getElementById("refreshCount")?.addEventListener("change", event => this.view.changeRefreshCount((<HTMLInputElement>event.target).valueAsNumber))
+        document.getElementById("refreshRate")?.addEventListener("change", event => this.view.changeRefreshRate(Math.floor(1000 / (<HTMLInputElement>event.target).valueAsNumber)))
+        
+        let sizeElement = document.getElementById("size")
+        if (sizeElement instanceof HTMLInputElement) {
+            sizeElement.value = Math.floor(this.size / 2).toString() 
+        }
+        
+
+        document.getElementById("size")?.addEventListener("change", event => this.size = 2*(<HTMLInputElement>event.target).valueAsNumber + 1)
 
         this.selectedState = State.UNVISITED_CELL;
         this.model.regenerate(this.model.model)

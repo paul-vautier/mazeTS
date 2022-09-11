@@ -6,10 +6,10 @@ import { ViewGrid } from "./views/view-grid.js";
 import { ViewCanvas } from "./views/view-canvas.js";
 
 window.addEventListener("load", () => {
-    let size = 20;
+    let size = 50;
     let model = new Model();
     new EmptyGenerator().create(2*size + 1, model);
     let view = new ViewCanvas(model);
 
-    let maze = new MazeController(size, model, view, new BFSSolver(model), new EmptyGenerator());
+    new MazeController(model, view, new BFSSolver(model), new EmptyGenerator());
 });

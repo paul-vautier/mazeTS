@@ -21,12 +21,12 @@
     </header>
     <main>
         <div id="tiles" class="panel">
-            <li>
-                <ul id="begin"><div data-tile="begin" class="tile maze-begin"><img src="public/img/flag.png" width="40" height="40"/></div><div class="tile-text">The beginning of the maze</div></ul>
-                <ul id="end"><div data-tile="end" class="tile maze-end"><img src="public/img/crown.png" width="40" height="40"/></div><div class="tile-text">The end of the maze</div></ul>
-                <ul id="wall"><div data-tile="wall" class="tile maze-wall"></div><div class="tile-text">A wall, which the solver will avoid</div></ul>
-                <ul id="unvisited"><div data-tile="unvisited" class="tile maze-unvisited"></div><div class="tile-text">An empty cell</div></ul>
-            </li>
+            <ul>
+                <li id="begin"><div data-tile="begin" class="tile maze-begin"><img src="public/img/flag.png" width="40" height="40"/></div><div class="tile-text">The beginning of the maze</div></li>
+                <li id="end"><div data-tile="end" class="tile maze-end"><img src="public/img/crown.png" width="40" height="40"/></div><div class="tile-text">The end of the maze</div></li>
+                <li id="wall"><div data-tile="wall" class="tile maze-wall"></div><div class="tile-text">A wall, which the solver will avoid</div></li>
+                <li id="unvisited"><div data-tile="unvisited" class="tile maze-unvisited"></div><div class="tile-text">An empty cell</div></li>
+            </ul>
             <div class="expand" data-expand="tiles"></div>
         </div>
 
@@ -34,12 +34,31 @@
 
         <div id="panel" class="panel right">
             <div class="expand rotated" data-expand="panel"></div>
-            <li>
-                <ul id="dfs"><div class="tile-text">A simple DFS maze generator</div><div class="tile maze-wall"></div></ul>
-                <ul id="prim"><div class="tile-text">Prim</div><div class="tile maze-wall"></div></ul>
-                <ul id="bfs"><div class="tile-text">BFS</div><div class="tile maze-wall"></div></ul>
-                <ul id="astar"><div class="tile-text">A*</div><div class="tile maze-wall"></div></ul>
-            </li>
+            <div>
+                <div>
+                    <label for="size">Size of the maze</label>
+                    <input id="size" type="number" min="5" max="150">
+                    <br>
+
+                    <label for="refreshRate">Refresh rate (updates per seconds)</label>
+                    <input id="refreshRate" type="number" min="1" max="250">
+                    <br>
+
+                    <label for="refreshCount">Refresh count (cells per update)</label>
+                    <input id="refreshCount" type="number" min="1" max="500">
+                </div>
+
+                <ul>
+                    <li id="dfs"><div class="tile-text">A simple DFS maze generator</div><div class="tile maze-wall"></div></li>
+                    <li id="prim"><div class="tile-text">Prim</div><div class="tile maze-wall"></div></li>
+                    <li id="btree"><div class="tile-text">Binary tree</div><div class="tile maze-wall"></div></li>
+                </ul>
+                
+                <ul>
+                    <li id="bfs"><div class="tile-text">BFS</div><div class="tile maze-wall"></div></li>
+                    <li id="astar"><div class="tile-text">A*</div><div class="tile maze-wall"></div></li>
+                </ul>
+            </div>
         </div>
     </main>
 </body>

@@ -10,7 +10,7 @@ import { StateUpdate } from "./state-update.js";
 export abstract class RealTimeGenerator implements MazeGenerator {
     readonly create = (size: number, model: Model): void => {
         this.doCreate(size, model).forEach(update=> {
-            model.updateModel(update.indices.x, update.indices.y, update.state)
+            model.updateModel(update.indices.y, update.indices.x, update.state)
         });
     }
 

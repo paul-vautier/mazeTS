@@ -2,9 +2,7 @@ import { State } from "../model/cell-state.js";
 import { Model } from "../model/model.js";
 import { EventPollingView } from "./view.js";
 
-const speed = 4;
-const cellUpdateCount = 500;
-export class ViewGrid extends EventPollingView{
+export class ViewGrid extends EventPollingView {
     grid: HTMLElement[][];  
     constructor(model : Model) {
         super(model);

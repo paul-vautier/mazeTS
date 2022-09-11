@@ -115,18 +115,28 @@ main > * {
     rotate: 180deg;
 }
 
-.panel > li {
+.panel > div {
     height: 100%;
     display: flex;
     justify-content: space-around;
     flex-direction: column;
     padding-right:10px;
+
+}
+.panel ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: stretch;
+    align-content: space-around;
+    gap: 30px;
 }
 
-.panel > li > ul {
+.panel ul > li {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
 }
 
 .tile-text {
@@ -217,4 +227,11 @@ div.maze-path {
 
 .right ul {
     padding-left: 0;
+}
+
+input[type=number] {
+    width: 40px;
+    padding:5px;
+    border-radius: 5px;
+    border: none;
 }
