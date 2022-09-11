@@ -35,7 +35,7 @@ export class MazeController {
             return new RecursiveDFSGenerator(this.size)
         })
 
-        this.addGeneratorChangeEvent("kruskal", () => {
+        this.addGeneratorChangeEvent("prim", () => {
             return new RandomizedPrim(this.size)
         })
 
