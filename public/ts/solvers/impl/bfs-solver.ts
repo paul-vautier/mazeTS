@@ -23,6 +23,9 @@ export class BFSSolver extends MazeSolver {
                 throw Error("wat ?")
             }
             let position = current[0];
+            if (visited[position.x][position.y]) {
+                continue;
+            }
             let path = current[1];
             if (this.model.model[position.x][position.y] == State.END) {
                 return [updates, path];
@@ -31,11 +34,8 @@ export class BFSSolver extends MazeSolver {
             visited[position.x][position.y] = true;
             updates.push({indices: {x:position.x, y:position.y}, state:State.VISITED_CELL});
             this.getCandidates(position.x, position.y, this.model.model, visited)
-                .filter((value) => {
-                    return queue.findIndex((item)=> item[0].x === value.x && item[0].y === value.y) === -1;
-                })
                 .forEach((candidate) => {
-                    let newPath = structuredClone(path).concat([candidate]);
+                    let newPath = path.concat([candidate]);
                     queue.push([candidate, newPath]);
                 });
         }

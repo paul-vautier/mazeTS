@@ -3,7 +3,7 @@ import { Model } from "../model/model.js";
 import { ModelListener } from "../model/model-listener.js";
 
 const speed = 4;
-const cellUpdateCount = 10;
+const cellUpdateCount = 100;
 export abstract class EventPollingView implements ModelListener {
     mazeParent : HTMLElement;
     
