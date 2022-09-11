@@ -25,43 +25,40 @@ export class RandomizedPrim extends StrictBlockwiseGenerator {
     }
 
     private carve(x: number, y: number, model: Model, visited: boolean[][]) : StateUpdate[] {
-        let indices : Indices[];
         let updates : StateUpdate[]
         updates = []
 
-        indices = [{x: x, y: y}];
         visited[x][y] = true;
-        let candidatesAndOffsets: [Indices, Indices][]
+        let candidatesAndOffsets: {candidate : Indices, offset : Indices}[]
         updates.push({indices: {x, y}, state: State.UNVISITED_CELL})
 
-        candidatesAndOffsets = this.getAllCandidates(indices, model, visited);
+        candidatesAndOffsets = this.getCandidatesAndOffset({x, y}, model, visited);
 
         while(candidatesAndOffsets.length) {
-
             let randIndex = getRandomInt(0, candidatesAndOffsets.length);
             let candidateAndOffset = candidatesAndOffsets.splice(randIndex, 1)[0];
-            let candidate = candidateAndOffset[0];
-
-            let offset = candidateAndOffset[1];
-            indices.push(candidate);
+            let candidate = candidateAndOffset.candidate;
+            if (visited[candidate.x][candidate.y]) {
+                continue;
+            }
+            let offset = candidateAndOffset.offset;
             visited[candidate.x][candidate.y] = true;
 
             updates.push({indices: {x: candidate.x, y: candidate.y}, state: State.UNVISITED_CELL})
             updates.push({indices: {x: offset.x, y: offset.y}, state: State.UNVISITED_CELL})
 
-            candidatesAndOffsets = this.getAllCandidates(indices, model, visited);
+            candidatesAndOffsets.push(...this.getCandidatesAndOffset(candidate, model, visited));
         }
         return updates;
     }
 
-    private getAllCandidates(indices : Indices[], model: Model, visited: boolean[][]) {
-        return indices.flatMap((index) => this.getCandidates(index.x, index.y, model.model, visited).map(offset=>{
-            let tuple : [Indices, Indices]
-            tuple = [
-                {x: index.x + 2*offset.x, y: index.y + 2*offset.y},
-                {x: index.x + offset.x, y: index.y + offset.y}
-            ];
+    private getCandidatesAndOffset(indices : Indices, model: Model, visited: boolean[][]) {
+        return this.getCandidates(indices.x, indices.y, model.model, visited).map(offset=>{
+            let tuple = {
+                candidate : {x: indices.x + 2*offset.x, y: indices.y + 2*offset.y},
+                offset: {x: indices.x + offset.x, y: indices.y + offset.y}
+            };
             return tuple;
-        }));
+        })
     }
 }
