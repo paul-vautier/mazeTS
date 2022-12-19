@@ -96,7 +96,7 @@ export class MazeController {
     }
 
     addTileChangeEvent() {
-        document.querySelectorAll('#tiles>li>ul>.tile[data-tile]').forEach((elt) => {
+        document.querySelectorAll('.tile[data-tile]').forEach((elt) => {
             if (elt instanceof HTMLElement) {
                 elt.addEventListener("click", () => {
                     if (elt.dataset.tile) {
